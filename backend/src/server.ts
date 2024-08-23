@@ -44,7 +44,9 @@ io.on('connection', (socket) => {
       participants: [participant],
       messages: []
     };
+    
     socket.join(roomId); // O dono entra na sala
+    io.to(roomId).emit('roomCreated', roomId);
     console.log(`Room created: ${roomId} by ${ownerId}`);
   });
   
@@ -59,7 +61,7 @@ io.on('connection', (socket) => {
       };
       room.participants.push(participant);
       socket.join(roomId);
-      io.to(roomId).emit('participantJoined', participant); // Notifica os outros participantes
+      io.to(roomId).emit('participantJoined', participantId, roomId); // Notifica os outros participantes
       console.log(`${participantName} entered the room: ${roomId}`);
     } else {
       console.log(`Room ${roomId} not found.`);
@@ -80,7 +82,8 @@ io.on('connection', (socket) => {
       // Ordena mensagens por timestamp
       room.messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
 
-      io.to(roomId).emit('newMessage', message); // Envia a mensagem para todos na sala
+      const messagesString = JSON.stringify(room.messages)
+      io.to(roomId).emit('newMessage', messagesString); // Envia a mensagem para todos na sala
 
       // Pseudo código para salvar a mensagem em um banco de dados
       /*

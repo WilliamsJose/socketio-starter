@@ -1,16 +1,31 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, ReactNode, useState } from "react"
 import { Button, Container } from "./Join.styled"
 import StyledInputComponent from "../Input";
 import { toast } from "react-toastify";
 import { useSocket } from "../../context/SocketContext";
 
-function Join({ setOnChat }: { setOnChat: React.Dispatch<React.SetStateAction<boolean>>}) {
+interface Join {
+  setOnChat: React.Dispatch<React.SetStateAction<boolean>>;
+  setMyId: React.Dispatch<React.SetStateAction<string>>;
+  myId: string;
+}
+
+function Join({ setOnChat, setMyId, myId }: Join) {
   const [name, setName] = useState<string>('');
   const [room, setRoom] = useState<string>('');
   const socket = useSocket();
 
   function handleJoin() {
-    console.log(name);
+    if (!room || room.trim() === '') {
+      toast('Please, enter room id first.');
+      return;
+    }
+    if (!name || name.trim() === '') {
+      toast('Please, enter your name first.');
+      return;
+    }
+    setMyId(`${name}_${Date.now()}`)
+    socket.emit('joinRoom', room, name, myId)
     setOnChat(true);
   }
 
@@ -19,7 +34,8 @@ function Join({ setOnChat }: { setOnChat: React.Dispatch<React.SetStateAction<bo
       toast('Please, enter your name first.');
       return;
     }
-    socket.emit('createRoom', `${name}_id`, name)
+    setMyId(`${name}_${Date.now()}`)
+    socket.emit('createRoom', myId, name);
     setOnChat(true);
   }
 

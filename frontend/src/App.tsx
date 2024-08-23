@@ -6,11 +6,12 @@ import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [onChat, setOnChat] = useState(false)
+  const [onChat, setOnChat] = useState<boolean>(false);
+  const [myId, setMyId] = useState<string>('');
 
   return (
     <>
-      {onChat ? <Chat /> : <Join setOnChat={setOnChat} />}
+      {onChat ? <Chat myId={myId} /> : <Join myId={myId} setOnChat={setOnChat} setMyId={setMyId} />}
       <ToastContainer />
     </>
   )

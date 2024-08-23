@@ -7,6 +7,10 @@ export const Container = styled.div`
   border-radius: 0.5%;
   gap: 10px;
   flex-direction: column;
+  margin: 0 auto;
+  height: 100vh;
+  place-content: center;
+  place-items: end;
 `
 
 export const Button = styled.button`
